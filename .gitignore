@@ -1,2 +1,6 @@
 .idea
 db.sqlite3
+product/migrations/
+order/migrations/
+user/migrations/
+venv
