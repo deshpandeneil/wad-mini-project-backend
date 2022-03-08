@@ -4,3 +4,7 @@ product/migrations/
 order/migrations/
 user/migrations/
 venv
+wadMiniProjectBackend/__pycache__/
+order/__pycache__/
+product/__pycache__/
+user/__pycache__/
