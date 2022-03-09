@@ -1,12 +1,6 @@
-from ast import mod
-from pyexpat import model
 from django.db import models
 from django.contrib.auth.models import User
 from product.models import Product
-
-from numpy import product
-
-from user.models import Profile
 
 # Create your models here.
 class Order(models.Model):
