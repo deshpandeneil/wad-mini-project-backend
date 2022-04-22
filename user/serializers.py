@@ -1,7 +1,10 @@
+from urllib import request
 from wsgiref.validate import validator
+
+from numpy import product
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Profile
+from .models import Cart, Profile
 
 def required(value):
     if value is None:
@@ -41,3 +44,27 @@ class UserSerializer(serializers.ModelSerializer):
             user_instance = User.objects.create_user(**validated_data)
             Profile.objects.create(user=user_instance)
         return user_instance
+
+
+class CartSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = Cart
+
+        @staticmethod
+        def create(validated_data):
+            if 'product_pk' not in validated_data:
+                raise serializers.ValidationError({"product_pk": "This field is required"})
+            user=request.user
+            product_pk=validated_data.pop('product_pk')
+            cart=Cart.objects.filter(user=user,product=product_pk)
+
+            if len(cart)>0:
+                cart[0].quantity+=1
+                return cart[0]
+            else:
+                cart_entry=Cart.objects.create(user=user,product=product_pk,quantity=1)
+                return cart_entry
+
+        
+
+            
