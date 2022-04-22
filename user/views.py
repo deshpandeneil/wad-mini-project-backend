@@ -4,7 +4,7 @@ from rest_framework import generics, status, authentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser, IsAuthenticated, AllowAny
-from .serializers import UserSerializer
+from .serializers import CartSerializer, UserSerializer
 
 # Create your views here.
 
@@ -29,3 +29,13 @@ class UserCreate(generics.CreateAPIView):
 class UserDetail(APIView):
     authentication_classes = [authentication.TokenAuthentication]
     pass
+
+class CartCreate(generics.CreateAPIView):
+    # authentication_classes = [authentication.TokenAuthentication]
+    serializer_class = CartSerializer
+    permission_classes = [IsAuthenticated]
+
+    
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
