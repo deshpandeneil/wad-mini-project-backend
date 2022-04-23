@@ -1,5 +1,4 @@
 from urllib import request
-from wsgiref.validate import validator
 
 from rest_framework import serializers
 from django.contrib.auth.models import User
@@ -73,6 +72,7 @@ class TokenObtainSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
         data['user'] = {
+            'id': self.user.id,
             'username': self.user.username,
             'first_name': self.user.first_name,
             'last_name': self.user.last_name,
@@ -85,6 +85,7 @@ class TokenRefreshSerializer(TokenRefreshSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
         data['user'] = {
+            'id': self.user.id,
             'username': self.user.username,
             'first_name': self.user.first_name,
             'last_name': self.user.last_name,
