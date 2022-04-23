@@ -34,6 +34,3 @@ class Product(models.Model):
 class ProductUses(models.Model):
     product_fk=models.ForeignKey(Product,on_delete=models.CASCADE)
     uses_fk=models.ForeignKey(Use,on_delete=models.CASCADE)
-    
-
-

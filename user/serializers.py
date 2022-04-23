@@ -1,7 +1,6 @@
 from urllib import request
 from wsgiref.validate import validator
 
-from numpy import product
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import Cart, Profile
