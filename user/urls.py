@@ -1,4 +1,6 @@
 from django.urls import path, include
+
+from user.serializers import UserSerializer
 from . import views
 from rest_framework_simplejwt import views as jwt_views
 
@@ -10,6 +12,12 @@ urlpatterns = [
     
     path('add_to_cart/', views.CartCreate.as_view()),
 
-    path('token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
+    path('token/', views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', views.TokenRefreshView.as_view(), name='token_refresh'),
 ]
+
+def jwt_response_payload_handler(token, user=None, request=None):
+    return {
+        'token': token,
+        'user': UserSerializer(user, context={'request': request}).data
+    }
