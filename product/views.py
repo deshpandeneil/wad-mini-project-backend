@@ -1,5 +1,5 @@
 from product.models import Product
-from product.serializers import ProductListSerializer
+from product.serializers import ProductDetailSerializer, ProductListSerializer
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAdminUser, IsAuthenticated, AllowAny
@@ -20,7 +20,7 @@ class ProductList(generics.ListAPIView):
     def post(self, request, *args, **kwargs):
         alphabet = request.data.get('alphabet', 'A').upper()
         print("ALPHABET IS: ", alphabet)
-        product_list = Product.objects.filter(disease_category_fk__name__startswith=alphabet)
+        product_list = Product.objects.filter(name__startswith=alphabet)
         print(product_list)
         return Response({
             'product_list': ProductListSerializer(product_list, many=True).data,
@@ -28,3 +28,9 @@ class ProductList(generics.ListAPIView):
     
     # def get_queryset(self, alphabet):
     #     return 
+
+class ProductDetail(generics.RetrieveAPIView):
+    # authentication_classes = [authentication.TokenAuthentication]
+    serializer_class = ProductDetailSerializer
+    permission_classes = [AllowAny]
+    queryset = Product.objects.all()

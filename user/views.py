@@ -33,9 +33,8 @@ class UserDetail(generics.RetrieveAPIView):
     # authentication_classes = [authentication.TokenAuthentication]
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
+    queryset = User.objects.all()
 
-    def get_queryset(self):
-        return User.objects.all()
 
 class CartCreate(generics.CreateAPIView):
     # authentication_classes = [authentication.TokenAuthentication]
