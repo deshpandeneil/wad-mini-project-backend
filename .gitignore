@@ -1,8 +1,8 @@
 .idea
 db.sqlite3
-product/migrations/
-order/migrations/
-user/migrations/
+# product/migrations/
+# order/migrations/
+# user/migrations/
 venv
 wadMiniProjectBackend/__pycache__/
 order/__pycache__/

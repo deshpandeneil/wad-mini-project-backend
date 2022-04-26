@@ -1,10 +1,11 @@
 from urllib import request
-from wsgiref.validate import validator
 
-from numpy import product
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import Cart, Profile
+
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
 
 def required(value):
     if value is None:
@@ -65,6 +66,28 @@ class CartSerializer(serializers.ModelSerializer):
                 cart_entry=Cart.objects.create(user=user,product=product_pk,quantity=1)
                 return cart_entry
 
-        
 
-            
+class TokenObtainSerializer(TokenObtainPairSerializer):
+
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        data['user'] = {
+            'id': self.user.id,
+            'username': self.user.username,
+            'first_name': self.user.first_name,
+            'last_name': self.user.last_name,
+        }
+        return data
+
+
+class TokenRefreshSerializer(TokenRefreshSerializer):
+
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        data['user'] = {
+            'id': self.user.id,
+            'username': self.user.username,
+            'first_name': self.user.first_name,
+            'last_name': self.user.last_name,
+        }
+        return data

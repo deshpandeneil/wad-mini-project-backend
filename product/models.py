@@ -4,12 +4,18 @@ from django.db import models
 class Uom(models.Model):
     name=models.CharField(max_length=255)
 
+    def __str__(self) -> str:
+        return  self.name
+
 class Use(models.Model):
     name=models.CharField(max_length=255)
 
     
 class DiseaseCategory(models.Model):
     name=models.CharField(max_length=255)
+
+    def __str__(self) -> str:
+        return self.name
 
 
 class Manufacturer(models.Model):
@@ -19,6 +25,9 @@ class Manufacturer(models.Model):
     area=models.CharField(max_length=255)
     street=models.CharField(max_length=255)
     contact=models.CharField(max_length=255)
+
+    def __str__(self) -> str:
+        return self.name
 
 class Product(models.Model):
     name=models.CharField(max_length=255)
@@ -31,9 +40,9 @@ class Product(models.Model):
     power=models.PositiveIntegerField()
     prescription_required=models.BooleanField()
 
+    def __str__(self) -> str:
+        return self.name
+
 class ProductUses(models.Model):
     product_fk=models.ForeignKey(Product,on_delete=models.CASCADE)
     uses_fk=models.ForeignKey(Use,on_delete=models.CASCADE)
-    
-
-

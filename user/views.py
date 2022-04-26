@@ -6,6 +6,9 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser, IsAuthenticated, AllowAny
 from .serializers import CartSerializer, UserSerializer
 
+from rest_framework_simplejwt.views import TokenViewBase
+from .serializers import TokenObtainSerializer, TokenRefreshSerializer
+
 # Create your views here.
 
 
@@ -26,9 +29,13 @@ class UserCreate(generics.CreateAPIView):
 
 
 
-class UserDetail(APIView):
-    authentication_classes = [authentication.TokenAuthentication]
-    pass
+class UserDetail(generics.RetrieveAPIView):
+    # authentication_classes = [authentication.TokenAuthentication]
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return User.objects.all()
 
 class CartCreate(generics.CreateAPIView):
     # authentication_classes = [authentication.TokenAuthentication]
@@ -39,3 +46,16 @@ class CartCreate(generics.CreateAPIView):
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
 
+
+class TokenObtainPairView(TokenViewBase):
+    """
+        Return JWT tokens (access and refresh) for specific user based on username and password.
+    """
+    serializer_class = TokenObtainSerializer
+
+
+class TokenRefreshView(TokenViewBase):
+    """
+        Renew tokens (access and refresh) with new expire time based on specific user's access token.
+    """
+    serializer_class = TokenRefreshSerializer
