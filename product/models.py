@@ -39,6 +39,7 @@ class Product(models.Model):
     uom_fk=models.ForeignKey(Uom,on_delete=models.CASCADE, blank=True, null=True)
     power=models.PositiveIntegerField(default=10)
     prescription_required=models.BooleanField(default=False)
+    image_url = models.CharField(max_length=255)
 
     def __str__(self) -> str:
         return self.name
