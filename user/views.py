@@ -107,6 +107,15 @@ class CartRemove(generics.GenericAPIView):
             return Response(CartSerializer(cart[0]).data)
         return Response({})
 
+    def delete(self, request, *args, **kwargs):
+        user = request.user
+        product = Product.objects.get(id=kwargs['pk'])
+        cart=Cart.objects.filter(user=user,product=product)
+        if cart:
+            cart[0].delete()
+            return Response({"message": "successfully deleted item from cart"})
+        return Response({})
+
 class CartDelete(ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
