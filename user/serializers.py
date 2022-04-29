@@ -52,21 +52,23 @@ class UserSerializer(serializers.ModelSerializer):
 class CartSerializer(serializers.ModelSerializer):
         class Meta:
             model = Cart
-            exclude = ('user', 'product', 'quantity')
+            # exclude = ('user', 'product', 'quantity')
+            fields = '__all__'
             
-        # def validate(self, data):
-        #     """
-        #     Check that the start is before the stop.
-        #     """
-        #     print('DATA IS: ', data.keys)
-        #     if 'product_pk' in data:
-        #         print(data)
-        #         return data
-        #     raise serializers.ValidationError({"product_pk": "This field is required"})
+        def validate(self, data):
+            """
+            Check that the start is before the stop.
+            """
+            print('DATA IS: ', data.keys)
+            if 'pk' in data:
+                print(data)
+                return data
+            raise serializers.ValidationError({"product_pk": "This field is required"})
             
 
         @staticmethod
-        def create(validated_data):
+        def create(validated_data, *args, **kwargs):
+            print("HERE", kwargs)
             if 'product_pk' not in validated_data:
                 raise serializers.ValidationError({"product_pk": "This field is required"})
             user=request.user

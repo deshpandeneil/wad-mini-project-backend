@@ -11,6 +11,7 @@ urlpatterns = [
     path('profiles/<int:pk>', views.UserDetail.as_view()),
     
     path('add_to_cart/<int:pk>', views.CartAdd.as_view()),
+    # path('remove_from_cart/<int:pk>', views.CartRemove.as_view()),
     # path('delete_from_cart/', views.CartDelete),
 
     path('token/', views.TokenObtainPairView.as_view(), name='token_obtain_pair'),

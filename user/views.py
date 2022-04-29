@@ -1,6 +1,7 @@
 from xml.dom import ValidationErr
 from django.shortcuts import render
 from django.contrib.auth.models import User
+from product.models import Product
 from rest_framework import generics, mixins
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -48,7 +49,50 @@ class CartAdd(mixins.CreateModelMixin, generics.GenericAPIView):
     
     def post(self, request, *args, **kwargs):
         print("HERE")
-        return self.create(request, *args, **kwargs)
+        print("args: ", args)
+        print("kwargs: ", kwargs)
+        data = {}
+        user = request.user
+        # data['product_pk'] = kwargs['pk']
+        # data['quantity'] = request.data['quantity']
+        print(data)
+        product = Product.objects.get(id=kwargs['pk'])
+        cart=Cart.objects.filter(user=user,product=product)
+
+        if len(cart)>0:
+            cart[0].quantity+=1
+            cart[0].save()
+            return Response(CartSerializer(cart[0]).data)
+        else:
+            cart_entry=Cart.objects.create(user=user,product=product,quantity=1)
+            return Response(CartSerializer(cart_entry).data)
+
+# class CartAdd(mixins.CreateModelMixin, generics.GenericAPIView):
+#     # authentication_classes = [authentication.TokenAuthentication]
+#     serializer_class = CartSerializer
+#     permission_classes = [IsAuthenticated]
+#     queryset = Cart.objects.all()
+
+    
+#     def post(self, request, *args, **kwargs):
+#         print("HERE")
+#         print("args: ", args)
+#         print("kwargs: ", kwargs)
+#         data = {}
+#         user = request.user
+#         # data['product_pk'] = kwargs['pk']
+#         # data['quantity'] = request.data['quantity']
+#         print(data)
+#         product = Product.objects.get(id=kwargs['pk'])
+#         cart=Cart.objects.filter(user=user,product=product)
+
+#         if len(cart)>0:
+#             cart[0].quantity+=1
+#             cart[0].save()
+#             return Response(CartSerializer(cart[0]).data)
+#         else:
+#             cart_entry=Cart.objects.create(user=user,product=product,quantity=1)
+#             return Response(CartSerializer(cart_entry).data)
 
 class CartDelete(ModelViewSet):
 
