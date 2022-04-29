@@ -5,8 +5,8 @@ from product.models import Product
 # Create your models here.
 class Order(models.Model):
     user_fk=models.ForeignKey(User,on_delete=models.CASCADE)
-    total_price=models.FloatField()
-    total_quantity=models.PositiveIntegerField()
+    total_price=models.FloatField(default=0)
+    total_quantity=models.PositiveIntegerField(default=0)
     eta=models.DateField()
     
 class Item(models.Model):
@@ -14,6 +14,6 @@ class Item(models.Model):
     order_fk=models.ForeignKey(Order,on_delete=models.CASCADE)
     price=models.FloatField()
     quantity=models.PositiveIntegerField()
-    prescription_provided=models.BooleanField()
+    prescription_provided=models.BooleanField(default=True)
 
 
