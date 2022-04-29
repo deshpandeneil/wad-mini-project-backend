@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAdminUser, IsAuthenticated, AllowAny
 from rest_framework import status
 from rest_framework.response import Response
+from user.models import Cart
 
 # Create your views here.
 
@@ -36,4 +37,12 @@ class ProductDetail(mixins.RetrieveModelMixin, generics.GenericAPIView):
     queryset = Product.objects.all()
 
     def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
+        print("KWARGS IS: ", kwargs)
+        prod = Product.objects.get(id=kwargs['pk'])
+        data = ProductDetailSerializer(prod).data
+        print("DATA is: ", data)
+        cart = Cart.objects.filter(product=prod)
+        if cart:
+            print("HERE")
+            data['quantity'] = cart[0].quantity
+        return Response(data)
