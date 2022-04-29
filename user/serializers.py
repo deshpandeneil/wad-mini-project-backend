@@ -1,4 +1,6 @@
+from dataclasses import field
 from urllib import request
+from product.models import Product
 
 from rest_framework import serializers
 from django.contrib.auth.models import User
@@ -50,20 +52,35 @@ class UserSerializer(serializers.ModelSerializer):
 class CartSerializer(serializers.ModelSerializer):
         class Meta:
             model = Cart
+            exclude = ('user', 'product', 'quantity')
+            
+        # def validate(self, data):
+        #     """
+        #     Check that the start is before the stop.
+        #     """
+        #     print('DATA IS: ', data.keys)
+        #     if 'product_pk' in data:
+        #         print(data)
+        #         return data
+        #     raise serializers.ValidationError({"product_pk": "This field is required"})
+            
 
         @staticmethod
         def create(validated_data):
             if 'product_pk' not in validated_data:
                 raise serializers.ValidationError({"product_pk": "This field is required"})
             user=request.user
+            print("USER IS: ", user)
             product_pk=validated_data.pop('product_pk')
-            cart=Cart.objects.filter(user=user,product=product_pk)
+            product = Product.objects.get_object_or_404(id=product_pk)
+            cart=Cart.objects.filter(user=user,product=product)
 
             if len(cart)>0:
                 cart[0].quantity+=1
+                cart[0].save()
                 return cart[0]
             else:
-                cart_entry=Cart.objects.create(user=user,product=product_pk,quantity=1)
+                cart_entry=Cart.objects.create(user=user,product=product,quantity=1)
                 return cart_entry
 
 

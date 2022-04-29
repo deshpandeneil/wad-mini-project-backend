@@ -1,6 +1,6 @@
 from product.models import Product
 from product.serializers import ProductDetailSerializer, ProductListSerializer
-from rest_framework import generics
+from rest_framework import generics, mixins
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAdminUser, IsAuthenticated, AllowAny
 from rest_framework import status
@@ -29,8 +29,11 @@ class ProductList(generics.ListAPIView):
     # def get_queryset(self, alphabet):
     #     return 
 
-class ProductDetail(generics.RetrieveAPIView):
+class ProductDetail(mixins.RetrieveModelMixin, generics.GenericAPIView):
     # authentication_classes = [authentication.TokenAuthentication]
     serializer_class = ProductDetailSerializer
     permission_classes = [AllowAny]
     queryset = Product.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)

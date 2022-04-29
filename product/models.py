@@ -35,10 +35,10 @@ class Product(models.Model):
     disease_category_fk=models.ForeignKey(DiseaseCategory,on_delete=models.CASCADE)
     description=models.TextField()
     price=models.FloatField()
-    unit_size=models.PositiveIntegerField()
-    uom_fk=models.ForeignKey(Uom,on_delete=models.CASCADE)
-    power=models.PositiveIntegerField()
-    prescription_required=models.BooleanField()
+    unit_size=models.PositiveIntegerField(default=10)
+    uom_fk=models.ForeignKey(Uom,on_delete=models.CASCADE, blank=True, null=True)
+    power=models.PositiveIntegerField(default=10)
+    prescription_required=models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return self.name
