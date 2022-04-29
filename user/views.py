@@ -40,6 +40,16 @@ class UserDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
 
 
+class CartList(generics.GenericAPIView):
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        cart = Cart.objects.filter(user=request.user)
+        return Response(CartSerializer(cart, many=True).data)
+
+
 class CartAdd(mixins.CreateModelMixin, generics.GenericAPIView):
     # authentication_classes = [authentication.TokenAuthentication]
     serializer_class = CartSerializer
@@ -67,32 +77,35 @@ class CartAdd(mixins.CreateModelMixin, generics.GenericAPIView):
             cart_entry=Cart.objects.create(user=user,product=product,quantity=1)
             return Response(CartSerializer(cart_entry).data)
 
-# class CartAdd(mixins.CreateModelMixin, generics.GenericAPIView):
-#     # authentication_classes = [authentication.TokenAuthentication]
-#     serializer_class = CartSerializer
-#     permission_classes = [IsAuthenticated]
-#     queryset = Cart.objects.all()
+class CartRemove(generics.GenericAPIView):
+    # authentication_classes = [authentication.TokenAuthentication]
+    serializer_class = CartSerializer
+    permission_classes = [IsAuthenticated]
+    queryset = Cart.objects.all()
 
     
-#     def post(self, request, *args, **kwargs):
-#         print("HERE")
-#         print("args: ", args)
-#         print("kwargs: ", kwargs)
-#         data = {}
-#         user = request.user
-#         # data['product_pk'] = kwargs['pk']
-#         # data['quantity'] = request.data['quantity']
-#         print(data)
-#         product = Product.objects.get(id=kwargs['pk'])
-#         cart=Cart.objects.filter(user=user,product=product)
-
-#         if len(cart)>0:
-#             cart[0].quantity+=1
-#             cart[0].save()
-#             return Response(CartSerializer(cart[0]).data)
-#         else:
-#             cart_entry=Cart.objects.create(user=user,product=product,quantity=1)
-#             return Response(CartSerializer(cart_entry).data)
+    def post(self, request, *args, **kwargs):
+        print("HERE")
+        print("args: ", args)
+        print("kwargs: ", kwargs)
+        data = {}
+        user = request.user
+        # data['product_pk'] = kwargs['pk']
+        # data['quantity'] = request.data['quantity']
+        print(data)
+        product = Product.objects.get(id=kwargs['pk'])
+        cart=Cart.objects.filter(user=user,product=product)
+        if cart:
+            print("cart is:", cart)
+            print("cart[0] is:", cart[0])
+            cart[0].quantity-=1
+            if cart[0].quantity == 0:
+                print("quantity is 0")
+                cart[0].delete()
+                return Response({})
+            cart[0].save()
+            return Response(CartSerializer(cart[0]).data)
+        return Response({})
 
 class CartDelete(ModelViewSet):
 
