@@ -47,7 +47,16 @@ class CartList(generics.GenericAPIView):
 
     def get(self, request, *args, **kwargs):
         cart = Cart.objects.filter(user=request.user)
-        return Response(CartSerializer(cart, many=True).data)
+        data = CartSerializer(cart, many=True).data
+        print(data)
+        for i in data:
+            print("I is: ", i)
+            prod = Product.objects.get(id=i['product'])
+            i['image_url'] = prod.image_url
+            i['name'] = prod.name
+            i['price'] = prod.price
+            print("I is: ", i)
+        return Response(data)
 
 
 class CartAdd(mixins.CreateModelMixin, generics.GenericAPIView):
