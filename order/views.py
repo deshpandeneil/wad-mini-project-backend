@@ -4,7 +4,7 @@ from django.forms import DateField
 from django.shortcuts import render
 from rest_framework.response import Response
 from order.models import Item, Order
-from order.serializers import OrderSerializer
+from order.serializers import ItemSerializer, OrderSerializer
 from product.models import Product
 from rest_framework import generics
 from user.models import Cart
@@ -42,3 +42,61 @@ class Checkout(generics.GenericAPIView):
         else:
             return Response({"message": "cart is empty"})
         pass
+
+class OrderHistory(generics.GenericAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        orders = Order.objects.filter(user_fk=request.user)
+        order_data = OrderSerializer(orders, many=True).data
+        # final = []
+        # for order in orders:
+        #     print(order.id)
+        #     items = Item.objects.filter(order_fk=order)
+        #     item_list = []
+        #     for item in items:
+        #         product = Product.objects.get(id=item.product_fk.id)
+        #         item_s = ItemSerializer(item).data
+        #         item_s['name'] = product.name
+        #         item_s['image_url'] = product.image_url
+        #         item_list.append(item_s)
+        #         # pass
+        #     # print("ITEMS ARE: ", items)
+        #     order_data = OrderSerializer(order).data
+        #     order_data['items'] = item_list
+        #     print("ORDER DATA IS: ", order_data)
+        #     final.append(order_data)
+        # print("DATA IS: ", order_data)
+        return Response(order_data)
+
+
+class OrderHistoryDetail(generics.GenericAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        # orders = Order.objects.filter(user_fk=request.user)
+        # order_data = OrderSerializer(orders, many=True).data
+        # final = []
+        # for order in orders:
+        order = Order.objects.get(id=kwargs['pk'])
+        print(order.id)
+        items = Item.objects.filter(order_fk=order)
+        item_list = []
+        for item in items:
+            product = Product.objects.get(id=item.product_fk.id)
+            item_s = ItemSerializer(item).data
+            item_s['name'] = product.name
+            item_s['image_url'] = product.image_url
+            item_list.append(item_s)
+            # pass
+        # print("ITEMS ARE: ", items)
+        # order_data = OrderSerializer(order).data
+        # order_data['items'] = item_list
+        # print("ORDER DATA IS: ", order_data)
+        # final.append(order_data)
+        # print("DATA IS: ", order_data)
+        return Response(item_list)

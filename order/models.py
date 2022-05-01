@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
 from product.models import Product
@@ -8,6 +9,7 @@ class Order(models.Model):
     total_price=models.FloatField(default=0)
     total_quantity=models.PositiveIntegerField(default=0)
     eta=models.DateField()
+    date_time = models.DateTimeField(auto_now_add=True)
     
 class Item(models.Model):
     product_fk=models.ForeignKey(Product,on_delete=models.CASCADE)
